@@ -53,7 +53,7 @@ if (!isset($_SESSION['name'])) {
 
       <div class="input-group">
         <label>Phone Number</label>
-        <input type="text" id="contactNo" value="<?php echo htmlspecialchars($_SESSION['contact_no']); ?>">
+        <input type="text" id="contactNo" value="<?php echo htmlspecialchars($_SESSION['contact_no'] ?? ''); ?>">
       </div>
 
       <button class="btn">Save Changes</button>

@@ -63,6 +63,7 @@ else if ($role === 'driver') {
         $row = $result->fetch_assoc();
         
         // THE FIX: Save the driver's info into the server's memory!
+        $_SESSION['contact_no'] = $row['contact_no']; 
         $_SESSION['driver_id'] = $row['driver_id']; 
         $_SESSION['name'] = $row['name']; 
         $_SESSION['username'] = $username; 
