@@ -26,7 +26,7 @@ function registerRider() {
             "Content-Type": "application/x-www-form-urlencoded"
         },
         body: 
-            "role=rider&" +
+            "role=rider" +
             "&name=" + encodeURIComponent(name) +
             "&contact=" + encodeURIComponent(contact) +
             "&username=" + encodeURIComponent(username) +
@@ -142,32 +142,6 @@ function registerDriver() {
     });
 }
 
-const findBtn = document.querySelector(".btn");
-const panel = document.getElementById("driversPanel");
-
-findBtn.addEventListener("click", () => {
-  const pickup = document.querySelectorAll("input")[0].value;
-  const dropoff = document.querySelectorAll("input")[1].value;
-
-  if (!pickup || !dropoff) {
-    alert("Please enter pickup and dropoff locations");
-    return;
-  }
-
-  // Show panel
-  panel.classList.remove("hidden");
-
-  // small delay for animation
-  setTimeout(() => {
-    panel.classList.add("show");
-  }, 10);
-});
-
-
-
-// Set initial state on page load
-toggle.dispatchEvent(new Event('change'));
-
 const distances = {
   Cubao: { Marikina: 6, Manila: 10, Makati: 12, Taguig: 15, Caloocan: 14 },
   Marikina: { Cubao: 6, Manila: 12, Makati: 14, Taguig: 18, Caloocan: 16 },
@@ -191,41 +165,112 @@ function calculateFare() {
     return;
   }
 
-  // Get distance
-  const distance = distances[pickup][dropoff] || distances[dropoff][pickup];
+  let distance = distances[pickup]?.[dropoff] || distances[dropoff]?.[pickup];
 
-  // Fare formula
+  if (!distance) {
+    alert("Distance not available");
+    return;
+  }
+
   const baseFare = 40;
   const perKm = 10;
-
   const fare = baseFare + (distance * perKm);
 
-  // Show fare in UI
-  updateDriverPrices(fare);
+  const driverList = document.getElementById("driverList");
+  driverList.innerHTML = "<p>Loading drivers...</p>";
 
-  // Show driver panel
-  const panel = document.getElementById("driversPanel");
-  panel.classList.remove("hidden");
-  setTimeout(() => panel.classList.add("show"), 50);
+  fetch("getAvailableDrivers.php")
+    .then(res => res.json())
+    .then(drivers => {
+
+      if (drivers.length === 0) {
+        driverList.innerHTML = "<p>No drivers available</p>";
+        return;
+      }
+
+      let html = "";
+
+      drivers.forEach((driver, index) => {
+        const finalFare = fare + (index * 10);
+        const readableStatus = driver.status === "on" ? "Online" : "Offline";
+        const initial = driver.name ? driver.name.charAt(0) : "?";
+
+        html += `
+          <div class="driver">
+            <div class="driver-left">
+              <div class="avatar">${initial}</div>
+              <div>
+                <strong>${driver.name}</strong>
+                <p>${driver.brand} ${driver.model} • ${driver.color}</p>
+                <small>Status: ${readableStatus}</small>
+              </div>
+            </div>
+
+            <div class="driver-right">
+              <span class="fare">₱${finalFare}</span>
+              <button class="request-btn" 
+                      data-fare="${finalFare}" 
+                      data-pickup="${pickup}" 
+                      data-dropoff="${dropoff}" 
+                      data-distance="${distance}">
+                Request
+              </button>
+            </div>
+          </div>
+        `;
+      });
+
+      driverList.innerHTML = html;
+
+      // Show drivers panel
+      const panel = document.getElementById("driversPanel");
+      panel.classList.remove("hidden");
+      setTimeout(() => panel.classList.add("show"), 50);
+
+      // Add click event for Request buttons
+      document.querySelectorAll(".request-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const pickup = btn.dataset.pickup;
+          const dropoff = btn.dataset.dropoff;
+          const distance = btn.dataset.distance;
+          const fare = btn.dataset.fare;
+
+          fetch("submitRide.php", {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: `pickup=${pickup}&dropoff=${dropoff}&distance=${distance}&fare=${fare}`
+          })
+          .then(res => res.json())
+          .then(data => {
+            if(data.success) {
+              alert("Ride requested! Wait for a driver to accept.");
+              btn.disabled = true;
+              btn.textContent = "Requested";
+            } else {
+              alert("Failed to request ride. Try again.");
+            }
+          })
+          .catch(err => {
+            console.error(err);
+            alert("Error submitting ride.");
+          });
+        });
+      });
+
+    })
+    .catch(err => {
+      console.error("Error fetching drivers:", err);
+      driverList.innerHTML = "<p>Error loading drivers</p>";
+    });
 }
 
-function updateDriverPrices(fare) {
-  const prices = document.querySelectorAll(".driver-right span");
-
-  prices.forEach((price, index) => {
-    // Slight variation per driver
-    const finalFare = fare + (index * 10);
-    price.textContent = "₱" + finalFare;
-  });
+function pollRideStatus() {
+    fetch("checkRideStatus.php")
+        .then(res => res.text())
+        .then(html => {
+            document.getElementById("rideStatus").innerHTML = html;
+        })
+        .catch(err => console.error(err));
 }
-
-function updateDriverPrices(fare) {
-  const fares = document.querySelectorAll(".fare");
-
-  fares.forEach((item, index) => {
-    // add variation per driver
-    const finalFare = fare + (index * 10);
-
-    item.textContent = "₱" + finalFare;
-  });
-}
+setInterval(pollRideStatus, 5000);
+pollRideStatus();

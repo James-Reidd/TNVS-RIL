@@ -36,3 +36,43 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
 });
+
+function loadRideRequests() {
+  fetch("getPendingRides.php")
+    .then(res => res.text())
+    .then(html => {
+      document.getElementById("rideRequests").innerHTML = html;
+      attachAcceptDeclineEvents(); // add click listeners
+    });
+}
+
+// Load every 5 seconds
+setInterval(loadRideRequests, 5000);
+
+// Initial load
+loadRideRequests();
+
+// Attach Accept/Decline button actions
+function attachAcceptDeclineEvents() {
+  document.querySelectorAll(".accept-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const rideId = btn.dataset.id;
+      fetch("updateRideStatus.php", {
+        method: "POST",
+        headers: {"Content-Type": "application/x-www-form-urlencoded"},
+        body: `id=${rideId}&status=accepted`
+      }).then(() => btn.closest(".ride").remove());
+    });
+  });
+
+  document.querySelectorAll(".decline-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const rideId = btn.dataset.id;
+      fetch("updateRideStatus.php", {
+        method: "POST",
+        headers: {"Content-Type": "application/x-www-form-urlencoded"},
+        body: `id=${rideId}&status=declined`
+      }).then(() => btn.closest(".ride").remove());
+    });
+  });
+}

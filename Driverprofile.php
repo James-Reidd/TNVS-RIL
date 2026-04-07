@@ -29,7 +29,7 @@ if (!isset($_SESSION['name'])) {
     </div>
     <div class="user-actions">
       <span>Hi, <?php echo $_SESSION['name']; ?></span>
-      <span class="logout">Logout</span>
+      <a href="logout.php" class="logout">Logout</a>
     </div>
   </div>
 
@@ -53,7 +53,7 @@ if (!isset($_SESSION['name'])) {
 
       <div class="input-group">
         <label>Phone Number</label>
-        <input type="text" id="contactNo" value="<?php echo htmlspecialchars($_SESSION['contact_no']); ?>">
+        <input type="text" id="contactNo" value="<?php echo htmlspecialchars($_SESSION['contact_no'] ?? ''); ?>">
       </div>
 
       <button class="btn">Save Changes</button>

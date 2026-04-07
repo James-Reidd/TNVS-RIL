@@ -28,7 +28,7 @@ if (!isset($_SESSION['customer_id'])) {
       <i data-lucide="bike"></i> MotoRide
     </div>
     <div class="user-actions">
-      <span>Hi, <?php echo $_SESSION['name']; ?></span>
+      <span>Hi, <?php echo htmlspecialchars($_SESSION['name']); ?></span>
       <a href="logout.php" class="logout">Logout</a>
     </div>
   </div>
@@ -70,68 +70,19 @@ if (!isset($_SESSION['customer_id'])) {
     <button class="btn" onclick="calculateFare()">Find Available Drivers</button>
   </div>
 
+  <!-- Ride Status Card -->
+  <div class="card" id="rideStatus">
+    <!-- Ride status will dynamically appear here -->
+  </div>
+
   <!-- ✅ MOVE PANEL OUTSIDE CARD -->
   <div id="driversPanel" class="drivers-panel hidden">
 
     <h3>Available Drivers Nearby</h3>
     <p class="subtitle">Choose your preferred driver</p>
 
-    <!-- DRIVER 1 -->
-    <div class="driver">
-      <div class="driver-left">
-        <div class="avatar">AP</div>
-        <div>
-          <strong>Allen Pogi</strong>
-          <div class="rating">⭐ 5.0</div>
-          <p>Yamaha YZF-R3 • Blue</p>
-          <small>Sport Bike • 6 min away</small>
-        </div>
-      </div>
-
-      <div class="driver-right">
-        <span class="fare">₱0</span>
-        <button class="request-btn">Request</button>
-      </div>
-    </div>
-
-    <!-- DRIVER 2 -->
-    <div class="driver">
-      <div class="driver-left">
-        <div class="avatar">HB</div>
-        <div>
-          <strong>Hisham Monggoloid</strong>
-          <div class="rating">⭐ 4.7</div>
-          <p>Honda Beat • Pink</p>
-          <small>Bike • 10 min away</small>
-        </div>
-      </div>
-
-      <div class="driver-right">
-        <span class="fare">₱0</span>
-        <button class="request-btn">Request</button>
-      </div>
-    </div>
-
-    <!-- DRIVER 3 -->
-    <div class="driver">
-      <div class="driver-left">
-        <div class="avatar">MB</div>
-        <div>
-          <strong>Malate Bading</strong>
-          <div class="rating">⭐ 1.2</div>
-          <p>Bike • Rainbow</p>
-          <small>20 min away</small>
-        </div>
-      </div>
-
-      <div class="driver-right">
-        <span class="fare">₱0</span>
-        <button class="request-btn">Request</button>
-      </div>
-    </div>
-
+  <div id="driverList"></div>
   </div>
-
 </div>
 
   <!-- BOTTOM NAV -->

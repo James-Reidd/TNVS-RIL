@@ -37,8 +37,7 @@ $checked = '';
 
     <div class="user-actions">
       <span>Hi, <?php echo $_SESSION['name']; ?></span>
-      <span class="logout">
-        <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
+        <i class="fa-solid fa-arrow-right-from-bracket"></i> <a href="logout.php" class="logout">Logout</a>
       </span>
     </div>
   </div>
@@ -79,38 +78,8 @@ $checked = '';
   <h2>Incoming Ride Requests</h2>
   <p>Accept a ride to get started</p>
 
-        <!-- RIDE 1 -->
-        <div class="ride">
-          <div class="ride-header">
-            <strong>Sarah Williams</strong>
-            <span class="price">₱150</span>
-          </div>
-
-          <p>8 min • 2.3 km</p>
-          <p>Pickup: 350 5th Ave</p>
-          <p>Dropoff: Central Park</p>
-
-          <div class="ride-actions">
-            <button class="btn">Accept Ride</button>
-            <button class="decline-btn">Decline</button>
-          </div>
-        </div>
-
-        <!-- RIDE 2 -->
-        <div class="ride">
-          <div class="ride-header">
-            <strong>Michael Brown</strong>
-            <span class="price">₱220</span>
-          </div>
-
-          <p>15 min • 4.1 km</p>
-          <p>Pickup: Penn Station</p>
-          <p>Dropoff: Brooklyn Bridge</p>
-
-          <div class="ride-actions">
-            <button class="btn">Accept Ride</button>
-            <button class="decline-btn">Decline</button>
-          </div>
+        <div id="rideRequests">
+        <!-- Ride requests will load here dynamically -->
         </div>
 
       </div>
