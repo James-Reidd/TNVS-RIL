@@ -29,7 +29,11 @@ if (!isset($_SESSION['name'])) {
     </div>
     <div class="user-actions">
       <span>Hi, <?php echo $_SESSION['name']; ?></span>
-      <span class="logout">Logout</span>
+      <span class="logout">
+      <a href="logout.php">
+          <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
+        </a>
+      </span>
     </div>
   </div>
 
@@ -56,7 +60,8 @@ if (!isset($_SESSION['name'])) {
         <input type="text" id="contactNo" value="<?php echo htmlspecialchars($_SESSION['contact_no']); ?>">
       </div>
 
-      <button class="btn">Save Changes</button>
+      <button class="btn" id="saveChangesBtn" onclick="updateDriver()">Save Changes</button>
+      <p id="status" class="status"></p>
     </div>
 
   </div>
@@ -71,6 +76,6 @@ if (!isset($_SESSION['name'])) {
       Profile
     </div>
   </div>
-
+  <script src="updateProfile.js"></script>
 </body>
 </html>

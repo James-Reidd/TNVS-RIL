@@ -1,7 +1,7 @@
 <?php 
 session_start(); 
 
-if (!isset($_SESSION['name'])) {
+if (!isset($_SESSION['customer_id'])) {
     header("Location: Riderlogin.html");
     exit();
 }
@@ -28,8 +28,10 @@ if (!isset($_SESSION['name'])) {
       <i data-lucide="bike"></i> MotoRide
     </div>
     <div class="user-actions">
+      <span>
       <span>Hi, <?php echo $_SESSION['name']; ?></span>
       <a href="logout.php" class="logout">Logout</a>
+      </span>
     </div>
   </div>
 
@@ -56,7 +58,8 @@ if (!isset($_SESSION['name'])) {
         <input type="text" id="contactNo" value="<?php echo htmlspecialchars($_SESSION['contact_no']); ?>">
       </div>
 
-      <button class="btn" id="saveChangesBtn" onclick="Riderchanges()">Save Changes</button>
+      <button class="btn" id="saveChangesBtn" onclick="updateRider()">Save Changes</button>
+      <p id="status" class="status"></p>
     </div>
 
   </div>
@@ -71,6 +74,6 @@ if (!isset($_SESSION['name'])) {
       Profile
     </div>
   </div>
-
+<script src="updateProfile.js"></script>
 </body>
 </html>

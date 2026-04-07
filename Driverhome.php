@@ -36,9 +36,11 @@ $checked = '';
     </div>
 
     <div class="user-actions">
-      <span>Hi, <?php echo $_SESSION['name']; ?></span>
+     <span>Hi, <?php echo $_SESSION['name']; ?></span>
       <span class="logout">
-        <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
+      <a href="logout.php">
+          <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
+        </a>
       </span>
     </div>
   </div>

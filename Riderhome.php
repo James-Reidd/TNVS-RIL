@@ -28,8 +28,10 @@ if (!isset($_SESSION['customer_id'])) {
       <i data-lucide="bike"></i> MotoRide
     </div>
     <div class="user-actions">
+      <span>
       <span>Hi, <?php echo $_SESSION['name']; ?></span>
       <a href="logout.php" class="logout">Logout</a>
+      </span>
     </div>
   </div>
 
