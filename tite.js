@@ -142,6 +142,32 @@ function registerDriver() {
     });
 }
 
+const findBtn = document.querySelector(".btn");
+const panel = document.getElementById("driversPanel");
+
+findBtn.addEventListener("click", () => {
+  const pickup = document.querySelectorAll("input")[0].value;
+  const dropoff = document.querySelectorAll("input")[1].value;
+
+  if (!pickup || !dropoff) {
+    alert("Please enter pickup and dropoff locations");
+    return;
+  }
+
+  // Show panel
+  panel.classList.remove("hidden");
+
+  // small delay for animation
+  setTimeout(() => {
+    panel.classList.add("show");
+  }, 10);
+});
+
+
+
+// Set initial state on page load
+toggle.dispatchEvent(new Event('change'));
+
 const distances = {
   Cubao: { Marikina: 6, Manila: 10, Makati: 12, Taguig: 15, Caloocan: 14 },
   Marikina: { Cubao: 6, Manila: 12, Makati: 14, Taguig: 18, Caloocan: 16 },
@@ -176,112 +202,50 @@ function calculateFare() {
   const perKm = 10;
   const fare = baseFare + (distance * perKm);
 
-  const driverList = document.getElementById("driverList");
-  driverList.innerHTML = "<p>Loading drivers...</p>";
+  // Show fare in UI
+  fetchDrivers(fare);
 
-  fetch("getAvailableDrivers.php")
-    .then(res => res.json())
-    .then(drivers => {
-
-      if (drivers.length === 0) {
-        driverList.innerHTML = "<p>No drivers available</p>";
-        return;
-      }
-
-      let html = "";
-
-      drivers.forEach((driver, index) => {
-        const finalFare = fare + (index * 10);
-        const readableStatus = driver.status === "on" ? "Online" : "Offline";
-        const initial = driver.name ? driver.name.charAt(0) : "?";
-
-        html += `
-          <div class="driver">
-            <div class="driver-left">
-              <div class="avatar">${initial}</div>
-              <div>
-                <strong>${driver.name}</strong>
-                <p>${driver.brand} ${driver.model} • ${driver.color}</p>
-                <small>Status: ${readableStatus}</sm/all>
-              </div>
-            </div>
-
-            <div class="driver-right">
-              <span class="fare">₱${finalFare}</span>
-              <button class="request-btn">Request</button>
-            </div>
-          </div>
-        `;
-      });
-
-    fetch("createRide.php", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-        pickup: pickup,
-        dropoff: dropoff,
-        fare: fare
-        })
-    });
-
-      driverList.innerHTML = html;
-
-      const panel = document.getElementById("driversPanel");
-      panel.classList.remove("hidden");
-      setTimeout(() => panel.classList.add("show"), 50);
-    })
-    .catch(err => {
-      console.error("Error fetching drivers:", err);
-      driverList.innerHTML = "<p>Error loading drivers</p>";
-    });
+  // Show driver panel
+  const panel = document.getElementById("driversPanel");
+  panel.classList.remove("hidden");
+  setTimeout(() => panel.classList.add("show"), 50);
 }
 
-setInterval(fetchRideRequests, 3000); // every 3 seconds
-
-async function fetchRideRequests() {
-  const res = await fetch("getRideRequests.php");
-  const rides = await res.json();
-
-  renderRideRequests(rides);
-}
-
-function renderRideRequests(rides) {
-  const container = document.getElementById("rideRequests");
+function renderDrivers(drivers, baseFare) {
+  const container = document.getElementById("driversList");
   container.innerHTML = "";
 
-  rides.forEach(ride => {
-    container.innerHTML += `
-      <div class="ride">
-        <strong>₱${ride.fare}</strong>
-        <p>Pickup: ${ride.pickup}</p>
-        <p>Dropoff: ${ride.dropoff}</p>
+  drivers.forEach((driver, index) => {
+    const fare = baseFare + (index * 10);
 
-        <button onclick="acceptRide(${ride.id})">Accept</button>
-        <button onclick="declineRide(${ride.id})">Decline</button>
+    const driverHTML = `
+      <div class="driver">
+        <div class="driver-left">
+          <div class="avatar">${driver.name.charAt(0)}</div>
+          <div>
+            <strong>${driver.name}</strong>
+            <p>${driver.vehicle} • ${driver.color}</p>
+          </div>
+        </div>
+
+        <div class="driver-right">
+          <span>₱${fare}</span>
+          <button class="request-btn">Request</button>
+        </div>
       </div>
     `;
+
+    container.innerHTML += driverHTML;
   });
 }
+async function fetchDrivers(baseFare) {
+  try {
+    const response = await fetch("getDrivers.php");
+    const drivers = await response.json();
 
-function acceptRide(id) {
-  updateRide(id, "accepted");
-}
+    renderDrivers(drivers, baseFare);
 
-function declineRide(id) {
-  updateRide(id, "declined");
-}
-
-function updateRide(id, status) {
-  fetch("updateRide.php", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      ride_id: id,
-      status: status
-    })
-  });
+  } catch (error) {
+    console.error("Error fetching drivers:", error);
+  }
 }

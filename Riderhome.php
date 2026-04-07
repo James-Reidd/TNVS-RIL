@@ -72,12 +72,12 @@ if (!isset($_SESSION['customer_id'])) {
 
   <!-- ✅ MOVE PANEL OUTSIDE CARD -->
   <div id="driversPanel" class="drivers-panel hidden">
+  <h3>Available Drivers Nearby</h3>
+  <p class="subtitle">Choose your preferred driver</p>
 
-    <h3>Available Drivers Nearby</h3>
-    <p class="subtitle">Choose your preferred driver</p>
+  <div id="driversList"></div>
+</div>
 
-  <div id="driverList"></div>
-  </div>
 </div>
 
   <!-- BOTTOM NAV -->
