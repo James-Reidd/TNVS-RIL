@@ -142,31 +142,8 @@ function registerDriver() {
     });
 }
 
-const findBtn = document.querySelector(".btn");
-const panel = document.getElementById("driversPanel");
-
-findBtn.addEventListener("click", () => {
-  const pickup = document.querySelectorAll("input")[0].value;
-  const dropoff = document.querySelectorAll("input")[1].value;
-
-  if (!pickup || !dropoff) {
-    alert("Please enter pickup and dropoff locations");
-    return;
-  }
-
-  // Show panel
-  panel.classList.remove("hidden");
-
-  // small delay for animation
-  setTimeout(() => {
-    panel.classList.add("show");
-  }, 10);
-});
 
 
-
-// Set initial state on page load
-toggle.dispatchEvent(new Event('change'));
 
 const distances = {
   Cubao: { Marikina: 6, Manila: 10, Makati: 12, Taguig: 15, Caloocan: 14 },
@@ -201,7 +178,7 @@ function calculateFare() {
   const fare = baseFare + (distance * perKm);
 
   // Show fare in UI
-  updateDriverPrices(fare);
+  fetchDrivers(fare);
 
   // Show driver panel
   const panel = document.getElementById("driversPanel");
@@ -209,23 +186,41 @@ function calculateFare() {
   setTimeout(() => panel.classList.add("show"), 50);
 }
 
-function updateDriverPrices(fare) {
-  const prices = document.querySelectorAll(".driver-right span");
+function renderDrivers(drivers, baseFare) {
+  const container = document.getElementById("driversList");
+  container.innerHTML = "";
 
-  prices.forEach((price, index) => {
-    // Slight variation per driver
-    const finalFare = fare + (index * 10);
-    price.textContent = "₱" + finalFare;
+  drivers.forEach((driver, index) => {
+    const fare = baseFare + (index * 10);
+
+    const driverHTML = `
+      <div class="driver">
+        <div class="driver-left">
+          <div class="avatar">${driver.name.charAt(0)}</div>
+          <div>
+            <strong>${driver.name}</strong>
+            <p>${driver.vehicle} • ${driver.color}</p>
+          </div>
+        </div>
+
+        <div class="driver-right">
+          <span>₱${fare}</span>
+          <button class="request-btn">Request</button>
+        </div>
+      </div>
+    `;
+
+    container.innerHTML += driverHTML;
   });
 }
+async function fetchDrivers(baseFare) {
+  try {
+    const response = await fetch("getDrivers.php");
+    const drivers = await response.json();
 
-function updateDriverPrices(fare) {
-  const fares = document.querySelectorAll(".fare");
+    renderDrivers(drivers, baseFare);
 
-  fares.forEach((item, index) => {
-    // add variation per driver
-    const finalFare = fare + (index * 10);
-
-    item.textContent = "₱" + finalFare;
-  });
+  } catch (error) {
+    console.error("Error fetching drivers:", error);
+  }
 }
