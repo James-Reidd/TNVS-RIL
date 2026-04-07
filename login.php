@@ -63,6 +63,13 @@ else if ($role === 'driver') {
     $result = $conn->query($sql);
 
     if ($result->num_rows > 0) {
+
+        $row = $result->fetch_assoc();
+        $_SESSION['driver_id'] = $row['driver_id']; // Store customer ID in session
+        $_SESSION['contact_no'] = $row['contact_no']; // Store contact number in session
+        $_SESSION['name'] = $row['name']; // Store name in session
+        $_SESSION['username'] = $username; // Store username in session
+
         echo "Login successful!";
     } else {
         echo "Invalid username or password!";

@@ -184,3 +184,65 @@ toggle.addEventListener("change", function () {
 
 // Set initial state on page load
 toggle.dispatchEvent(new Event('change'));
+
+const distances = {
+  Cubao: { Marikina: 6, Manila: 10, Makati: 12, Taguig: 15, Caloocan: 14 },
+  Marikina: { Cubao: 6, Manila: 12, Makati: 14, Taguig: 18, Caloocan: 16 },
+  Manila: { Cubao: 10, Marikina: 12, Makati: 8, Taguig: 12, Caloocan: 9 },
+  Makati: { Cubao: 12, Marikina: 14, Manila: 8, Taguig: 7, Caloocan: 15 },
+  Taguig: { Cubao: 15, Marikina: 18, Manila: 12, Makati: 7, Caloocan: 20 },
+  Caloocan: { Cubao: 14, Marikina: 16, Manila: 9, Makati: 15, Taguig: 20 }
+};
+
+function calculateFare() {
+  const pickup = document.getElementById("pickup").value;
+  const dropoff = document.getElementById("dropoff").value;
+
+  if (!pickup || !dropoff) {
+    alert("Please select both locations");
+    return;
+  }
+
+  if (pickup === dropoff) {
+    alert("Pickup and dropoff cannot be the same");
+    return;
+  }
+
+  // Get distance
+  const distance = distances[pickup][dropoff] || distances[dropoff][pickup];
+
+  // Fare formula
+  const baseFare = 40;
+  const perKm = 10;
+
+  const fare = baseFare + (distance * perKm);
+
+  // Show fare in UI
+  updateDriverPrices(fare);
+
+  // Show driver panel
+  const panel = document.getElementById("driversPanel");
+  panel.classList.remove("hidden");
+  setTimeout(() => panel.classList.add("show"), 50);
+}
+
+function updateDriverPrices(fare) {
+  const prices = document.querySelectorAll(".driver-right span");
+
+  prices.forEach((price, index) => {
+    // Slight variation per driver
+    const finalFare = fare + (index * 10);
+    price.textContent = "₱" + finalFare;
+  });
+}
+
+function updateDriverPrices(fare) {
+  const fares = document.querySelectorAll(".fare");
+
+  fares.forEach((item, index) => {
+    // add variation per driver
+    const finalFare = fare + (index * 10);
+
+    item.textContent = "₱" + finalFare;
+  });
+}

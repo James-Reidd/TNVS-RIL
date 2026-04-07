@@ -42,16 +42,32 @@ if (!isset($_SESSION['customer_id'])) {
     <p>Enter your pickup and destination</p>
 
     <div class="input-group">
-      <label>Pickup Location</label>
-      <input type="text" placeholder="Enter pickup address">
-    </div>
+  <label>Pickup Location</label>
+  <select id="pickup">
+    <option disabled selected value="">Select pickup</option>
+    <option value="Cubao">Cubao</option>
+    <option value="Marikina">Marikina</option>
+    <option value="Manila">Manila</option>
+    <option value="Makati">Makati</option>
+    <option value="Taguig">Taguig</option>
+    <option value="Caloocan">Caloocan</option>
+  </select>
+</div>
 
-    <div class="input-group">
-      <label>Dropoff Location</label>
-      <input type="text" placeholder="Enter destination address">
-    </div>
+<div class="input-group">
+  <label>Dropoff Location</label>
+  <select id="dropoff">
+    <option disabled selected value="">Select dropoff</option>
+    <option value="Cubao">Cubao</option>
+    <option value="Marikina">Marikina</option>
+    <option value="Manila">Manila</option>
+    <option value="Makati">Makati</option>
+    <option value="Taguig">Taguig</option>
+    <option value="Caloocan">Caloocan</option>
+  </select>
+</div>
 
-    <button class="btn">Find Available Drivers</button>
+    <button class="btn" onclick="calculateFare()">Find Available Drivers</button>
   </div>
 
   <!-- ✅ MOVE PANEL OUTSIDE CARD -->
@@ -73,7 +89,7 @@ if (!isset($_SESSION['customer_id'])) {
       </div>
 
       <div class="driver-right">
-        <span>₱500</span>
+        <span class="fare">₱0</span>
         <button class="request-btn">Request</button>
       </div>
     </div>
@@ -91,7 +107,7 @@ if (!isset($_SESSION['customer_id'])) {
       </div>
 
       <div class="driver-right">
-        <span>₱50</span>
+        <span class="fare">₱0</span>
         <button class="request-btn">Request</button>
       </div>
     </div>
@@ -109,7 +125,7 @@ if (!isset($_SESSION['customer_id'])) {
       </div>
 
       <div class="driver-right">
-        <span>Bato</span>
+        <span class="fare">₱0</span>
         <button class="request-btn">Request</button>
       </div>
     </div>

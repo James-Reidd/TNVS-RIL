@@ -43,20 +43,20 @@ if (!isset($_SESSION['name'])) {
 
       <div class="input-group">
         <label>Full Name</label>
-        <input type="text" value="Hisham Burat">
+        <input type="text" id="name" value="<?php echo htmlspecialchars($_SESSION['name']); ?>">
       </div>
 
       <div class="input-group">
         <label>Username</label>
-        <input type="email" value="Hisham@example.com">
+        <input type="email" id="username" value="<?php echo htmlspecialchars($_SESSION['username']); ?>">
       </div>
 
       <div class="input-group">
         <label>Phone Number</label>
-        <input type="text" value="+1 234 567 8900">
+        <input type="text" id="contactNo" value="<?php echo htmlspecialchars($_SESSION['contact_no']); ?>">
       </div>
 
-      <button class="btn">Save Changes</button>
+      <button class="btn" id="saveChangesBtn" onclick="Riderchanges()">Save Changes</button>
     </div>
 
   </div>
